@@ -14,7 +14,7 @@ npm install allow
 
 ### React
 
-Allow provides two main React components: `AllowContext.Provider` and `Allow`.
+`Allow` provides two main React components: `AllowContext.Provider` and `Allow`.
 
 - `AllowContext.Provider` provides the context for the authorization through the component tree.
 - `Allow` renders its children when the roles match with the context.
@@ -52,7 +52,7 @@ function App({ context }) {
   return (
     <AllowContext.Provider context={context}>
       <Allow roles={['app:admin', 'app:user']}>
-        This appears
+        This appears because matches with the second role `app:user`
       </Allow>
       <Allow roles={['app:admin']}>
         This does not appears
@@ -66,7 +66,7 @@ render(<App context={context}>, document.getElementById('root'))
 
 #### Multi-level example
 
-Imagine an app like Github, where the user has an specific role inside each organization and a system wide `user` role.
+Imagine an app like Github, where the user has an specific role inside each organization and a system-wide role, like: `user` and `staff`.
 
 We can setup a new level called `organization`, so we can authorize inside this context
 
@@ -88,7 +88,7 @@ const context = {
   user: {
     roles: {
       app: 'user', // system-wide role, doesn't need an additional `id` to be resolved
-      organization: { 1: 'admin' } // the user role for all organizations he belongs
+      organization: { 1: 'admin' } // the role for all organizations the user belongs
     }
   }
 }
@@ -100,11 +100,13 @@ function OrganizationPage({ organization }) {
       * providing the tree with a context like this:
       * {
       *   user: {
-      *   roles: {
-      *     app: 'user',
-      *     organization: { 1: 'admin' }
+      *     roles: {
+      *       app: 'user',
+      *       organization: { 1: 'admin' }
+      *     }
       *   },
-      *   organization: { id: 1 } // current organization, the lib will look for a role inside `organization` with `id = 1`
+      *   // current organization, the lib will look for `user.roles.organization[1]`
+      *   organization: { id: 1 } 
       * }
       */}
     <AllowContext.Provider context={{ organization }}>
@@ -119,7 +121,7 @@ function Github({ context }) {
   const exampleOrganization = { id: 1 } // usually from api, needs an `id`
   return (
     <AllowContext.Provider context={context}>
-      <OrganizationPage organization={exampleOrganization}>
+      <OrganizationPage organization={exampleOrganization} />
     </AllowContext.Provider>
   )
 }
@@ -127,7 +129,7 @@ function Github({ context }) {
 render(<Github context={context}>, document.getElementById('root'))
 ```
 
-#### Additinal options
+#### Additional options
 
 You can write the roles as:
  - `'app:admin'`: full version
