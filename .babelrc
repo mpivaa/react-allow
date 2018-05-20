@@ -1,0 +1,3 @@
+{
+  "presets": ["react", "flow", "env", "stage-2"]
+}

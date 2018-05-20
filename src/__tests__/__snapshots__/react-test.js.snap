@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Nested provider should not affect outer components 1`] = `"This should appear"`;
+
+exports[`Nested provider should override parent 1`] = `"This should appear"`;
+
+exports[`Render children when is allowed 1`] = `"This should appear"`;
+
+exports[`Render ifNotAllowed 1`] = `"404"`;
+
+exports[`Render nothing when is not allowed 1`] = `null`;
+
+exports[`Use context to allow 1`] = `"This should appear"`;
