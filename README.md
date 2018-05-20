@@ -1,10 +1,10 @@
-# Allow (In construction)
+# Allow
 
 Multi level role based authorization
 
 ## Getting Started
 
-This library is available as a NPM package, so you can install it as you would any other package:
+This library is available as a NPM package (not yet), so you can install it as you would any other package:
 
 ```sh
 npm install allow
