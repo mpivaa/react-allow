@@ -1,2 +1,2 @@
 export { default as AllowContext } from './context'
-export { Allow } from './auth'
+export { Allow } from './allow'

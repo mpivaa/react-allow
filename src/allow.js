@@ -1,5 +1,5 @@
 // @flow
-import { isEmpty, some, map, slice, isNil, isUndefined, get } from 'lodash'
+import { isEmpty, some, map, slice, isNil, get } from 'lodash'
 import type {
   Context,
   Level,

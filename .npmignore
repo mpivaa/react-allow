@@ -1,0 +1,7 @@
+/src
+.flowconfig
+.eslintrc
+.babelrc
+rollup.config.js
+coverage
+flow-typed
