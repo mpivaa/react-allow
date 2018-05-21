@@ -145,6 +145,19 @@ You can write the roles as:
  - `'app:admin'`: full version
  - `'a:admin'`: using it's alias
  - `'app:*'`: the pattern `*` means `any` role in the level
+ 
+Use the current context anywhere, via `AuthContext.Consumer`
+```jsx
+function UserProfile(props) {
+  return (
+    <AuthContext.Consumer>
+      {context => (
+        <div>Name: {context.user.name}</div>
+      )}
+    </AuthContext.Consumer>
+  )
+}
+```
 
 Alternative render when not allowed
  ```jsx
