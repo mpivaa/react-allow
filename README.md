@@ -1,20 +1,20 @@
-# Allow
+# React Allow
 
 Multi level role based authorization
 
 ## Getting Started
 
-This library is available as a NPM package (not yet), so you can install it as you would any other package:
+This library is available as a NPM package, so you can install it as you would any other package:
 
 ```sh
-npm install allow
+npm install --save react-allow
 ```
 
 ## Usage
 
 ### React
 
-`Allow` provides two main React components: `AllowContext.Provider` and `Allow`.
+__React Allow__ provides two main React components: `AllowContext.Provider` and `Allow`.
 
 - `AllowContext.Provider` provides the context for the authorization through the component tree.
 - `Allow` renders its children when the roles match with the context, can be anywhere inside provider tree.
@@ -104,23 +104,11 @@ setupAllow({
 const context = {
   user: {
     roles: {
-      // the default level will always lookup user.roles[level_name] for the resolution
+      // the default level will always lookup `user.roles[level_name]` for the resolution
       app: 'user', 
-      organization: { 1: 'admin' } // the role for all organizations the user belongs
+      organization: { 1: 'admin' } // the role for all organizations the user belongs, as { [id: number | string]: string }
     }
   }
-}
-
-function OrganizationPage({ organization }) {
-  return (
-    // Nested `AllowContext.Provider` merging the current organization to the context
-    <AllowContext.Provider context={{ organization }}>
-      {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
-      <Allow roles={['app:admin', 'organization:admin']}>
-        This will render because user.roles.organization[1] === 'admin'
-      </Allow>
-    </AllowContext.Provider>
-  )
 }
 
 function Github({ context }) {
@@ -136,6 +124,18 @@ function Github({ context }) {
   )
 }
 
+function OrganizationPage({ organization }) {
+  return (
+    // Nested `AllowContext.Provider` merging the current organization to the context
+    <AllowContext.Provider context={{ organization }}>
+      {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
+      <Allow roles={['app:admin', 'organization:admin']}>
+        This will render because `user.roles.organization[1] === 'admin'`
+      </Allow>
+    </AllowContext.Provider>
+  )
+}
+
 render(<Github context={context} />, document.getElementById('root'))
 ```
 
@@ -145,10 +145,23 @@ You can write the roles as:
  - `'app:admin'`: full version
  - `'a:admin'`: using it's alias
  - `'app:*'`: the pattern `*` means `any` role in the level
+ 
+Use the current context anywhere, via `AuthContext.Consumer`
+```jsx
+function UserProfile(props) {
+  return (
+    <AuthContext.Consumer>
+      {context => (
+        <div>Name: {context.user.name}</div>
+      )}
+    </AuthContext.Consumer>
+  )
+}
+```
 
-Alternative render when not authorized
+Alternative render when not allowed
  ```jsx
- <Allow ifNotAuthorized={NotAuthorizedPage} />
+ <Allow ifNotAllowed={NotAuthorizedPage} />
  ```
 
  Override provider context
@@ -174,3 +187,11 @@ const context = {
 isAllowed(context, ['app:admin']) // => false
 isAllowed(context, ['app:user']) // => true
 ```
+
+## TODO
+
+- [ ] Easy the context creation based on common user/role patterns
+- [ ] `['admin']` should lookup for `['<default>:admin']`
+- [ ] Add `Deny` component
+- [ ] Support React 15
+- [ ] Support `updateContext` using render functions (maybe)
