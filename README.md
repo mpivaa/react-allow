@@ -1,6 +1,6 @@
 # React Allow
 
-Multi level role based authorization
+Multi-level role based authorization for React
 
 ## Getting Started
 
@@ -77,7 +77,16 @@ Imagine an app like Github, where the user has a specific role inside each organ
     - Repo C (id = 3): writer
     - Repo D (id = 4): no role assigned
 
-See the following example
+Where
+- The user must be authenticated
+- Users can see the organization if it's a member or admin
+- Organization admins can edit the organization
+- Organization admins can do anything with it's repos
+- Repo writers can edit the repo
+- Repo readers can only see the repo
+
+
+See the following example:
 
 [![Edit react-allow complex example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/w7x5v9qy9l)
 ```jsx
@@ -129,7 +138,6 @@ function Github({ context }) {
   return (
     <AllowContext.Provider context={context}>
       <Allow>
-        {" "}
         {/* is authenticated */}
         <OrganizationPage organization={organizationA} />
         <OrganizationPage organization={organizationB} />
