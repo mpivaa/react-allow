@@ -6,7 +6,7 @@ import AllowContext from './context'
 
 type Props = {
   children?: React.Node,
-  roles: [ComposedRole],
+  roles?: [ComposedRole],
   ifNotAllowed?: React.ComponentType<any>,
   overrideContext?: Context
 }

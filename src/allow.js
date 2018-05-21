@@ -20,8 +20,11 @@ export function setupAllow(newConfig: Config) {
   config = {...config, ...newConfig}
 }
 
-export function isAllowed(ctx: ?Context, allowedRoles: [ComposedRole]): boolean {
+export function isAllowed(ctx: ?Context, allowedRoles?: [ComposedRole]): boolean {
   if(isValidContext(ctx)) {
+    if(isNil(allowedRoles)) {
+      return true
+    }
     return some(parseRoles(allowedRoles), ([level, role]) => {
       if(isValidContext(ctx)) {
         return checkRole([level, role], ctx)

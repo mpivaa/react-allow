@@ -12,6 +12,7 @@ test('isAllowed without context', () => {
   expect(isAllowed({}, ['system:any'])).toBe(false)
 })
 
+
 test('isAllowed on some level', () => {
   const ctx = {
     user: {
@@ -23,6 +24,18 @@ test('isAllowed on some level', () => {
 
   expect(isAllowed(ctx, ['app:admin'])).toBe(true)
   expect(isAllowed(ctx, ['app:somerole'])).toBe(false)
+})
+
+test('isAllowed without roles checks if authenticated', () => {
+  const ctx = {
+    user: {
+      roles: {
+        app: 'anyrole'
+      }
+    }
+  }
+
+  expect(isAllowed(ctx)).toBe(true)
 })
 
 test('isAllowed with aliases', () => {

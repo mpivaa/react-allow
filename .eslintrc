@@ -1,8 +1,8 @@
 {
-	"extends": [
-		"plugin:flowtype/recommended"
-	],
-	"plugins": [
+  "extends": [
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
     "flowtype"
   ]
 }
