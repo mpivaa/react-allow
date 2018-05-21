@@ -180,4 +180,5 @@ isAllowed(context, ['app:user']) // => true
 - [ ] Easy the context creation based on common user/role patterns
 - [ ] `['admin']` should lookup for `['<default>:admin']`
 - [ ] Add `Deny` component
+- [ ] Support React 15
 - [ ] Support `updateContext` using render functions (maybe)
