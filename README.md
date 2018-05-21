@@ -1,4 +1,4 @@
-# Allow
+# React Allow
 
 Multi level role based authorization
 
@@ -174,3 +174,10 @@ const context = {
 isAllowed(context, ['app:admin']) // => false
 isAllowed(context, ['app:user']) // => true
 ```
+
+## TODO
+
+- [ ] Easy the context creation based on common user/role patterns
+- [ ] `['admin']` should lookup for `['<default>:admin']`
+- [ ] Add `Deny` component
+- [ ] Support `updateContext` using render functions (maybe)
