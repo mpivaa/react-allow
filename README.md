@@ -20,11 +20,12 @@ npm install allow
 - `Allow` renders its children when the roles match with the context.
 
 #### Simple example
+[![Edit ql666pw749](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/ql666pw749)
+
 ```jsx
 import React from 'react'
 import { render } from 'react-dom' 
-import { setupAllow } from 'allow'
-import { Allow, AllowContext } from 'allow/react'
+import { Allow, AllowContext, setupAllow } from 'react-allow'
 
 // Optional configuration, this are the defaults
 setupAllow({
@@ -52,28 +53,44 @@ function App({ context }) {
   return (
     <AllowContext.Provider context={context}>
       <Allow roles={['app:admin', 'app:user']}>
-        This appears because matches with the second role `app:user`
+        This will render because matches with the second role `app:user`
       </Allow>
       <Allow roles={['app:admin']}>
-        This does not appears
+        This will not render
       </Allow>
     </AllowContext.Provider>
   )
 }
 
-render(<App context={context}>, document.getElementById('root'))
+render(<App context={context} />, document.getElementById('root'))
 ```
 
 #### Multi-level example
 
 Imagine an app like Github, where the user has an specific role inside each organization and a system-wide role, like: `user` and `staff`.
 
-We can setup a new level called `organization`, so we can authorize inside this context
+We can setup a new level called `organization`, so we can authorize inside this context.
 
+`AllowContext.Provider` can be nested, merging it's context with the parent, providing the tree with an updated context:
+
+```js
+{
+  user: {
+    roles: {
+      app: 'user',
+      organization: { 1: 'admin' }
+    }
+  },
+  // current organization, the lib will look for `user.roles.organization[1]`
+  organization: { id: 1 } 
+}
+```
+
+[![Edit react-allow complex example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/w7x5v9qy9l)
 ```jsx
 import React from 'react'
-import { setupAllow } from 'allow'
-import { Allow, AllowContext } from 'allow/react'
+import { render } from 'react-dom' 
+import { Allow, AllowContext, setupAllow } from 'react-allow'
 
 setupAllow({
   levels: ['app', 'organization'],
@@ -87,7 +104,8 @@ setupAllow({
 const context = {
   user: {
     roles: {
-      app: 'user', // system-wide role, doesn't need an additional `id` to be resolved
+      // the default level will always lookup user.roles[level_name] for the resolution
+      app: 'user', 
       organization: { 1: 'admin' } // the role for all organizations the user belongs
     }
   }
@@ -95,23 +113,11 @@ const context = {
 
 function OrganizationPage({ organization }) {
   return (
-    {/*
-      * `AllowContext.Provider` can be nested, merging it's context with the parent,
-      * providing the tree with a context like this:
-      * {
-      *   user: {
-      *     roles: {
-      *       app: 'user',
-      *       organization: { 1: 'admin' }
-      *     }
-      *   },
-      *   // current organization, the lib will look for `user.roles.organization[1]`
-      *   organization: { id: 1 } 
-      * }
-      */}
+    // Nested `AllowContext.Provider` merging the current organization to the context
     <AllowContext.Provider context={{ organization }}>
+      {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
       <Allow roles={['app:admin', 'organization:admin']}>
-        This appears because user.roles.organization[1] === 'admin'
+        This will render because user.roles.organization[1] === 'admin'
       </Allow>
     </AllowContext.Provider>
   )
@@ -122,11 +128,15 @@ function Github({ context }) {
   return (
     <AllowContext.Provider context={context}>
       <OrganizationPage organization={exampleOrganization} />
+      {/* This `Allow` will not use the updated context */}
+      <Allow roles={['app:admin', 'organization:admin']}>
+        This will not render
+      </Allow>
     </AllowContext.Provider>
   )
 }
 
-render(<Github context={context}>, document.getElementById('root'))
+render(<Github context={context} />, document.getElementById('root'))
 ```
 
 #### Additional options
@@ -151,7 +161,7 @@ Alternative render when not authorized
 Same options and usage of the React, except context providers
 
 ```js
-import { isAllowed } from 'allow'
+import { isAllowed } from 'react-allow'
 
 const context = {
   user: {

@@ -1,6 +1,6 @@
 {
   "name": "react-allow",
-  "version": "0.0.5",
+  "version": "0.0.1",
   "description": "A multi-level role based authorization",
   "author": "m.pivaa@gmail.com",
   "keywords": [
@@ -16,6 +16,10 @@
   },
   "scripts": {
     "compile": "npx babel src --out-dir lib --ignore test.js",
+    "clean-lib": "rm -R ./lib",
+    "build": "npm run clean-lib && npm run compile && npm run copy-package",
+    "copy-package": "cp -rf package.json lib",
+    "publish": "cd lib && npm publish",
     "test": "jest"
   },
   "dependencies": {
