@@ -67,77 +67,124 @@ render(<App context={context} />, document.getElementById('root'))
 
 #### Multi-level example
 
-Imagine an app like Github, where the user has an specific role inside each organization and a system-wide role, like: `user` and `staff`.
+Imagine an app like Github, where the user has a specific role inside each organization, repo and a system-wide role.
 
-We can setup a new level called `organization`, so we can authorize inside this context.
+- User A (id = 1): user
+  - Organization A (id = 1): member
+    - Repo A (id = 1): writer
+    - Repo B (id = 2): reader
+  - Organization B (id = 2): admin
+    - Repo C (id = 3): writer
+    - Repo D (id = 4): no role assigned
 
-`AllowContext.Provider` can be nested, merging it's context with the parent, providing the tree with an updated context:
-
-```js
-{
-  user: {
-    roles: {
-      app: 'user',
-      organization: { 1: 'admin' }
-    }
-  },
-  // current organization, the lib will look for `user.roles.organization[1]`
-  organization: { id: 1 } 
-}
-```
+See the following example
 
 [![Edit react-allow complex example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/w7x5v9qy9l)
 ```jsx
-import React from 'react'
-import { render } from 'react-dom' 
-import { Allow, AllowContext, setupAllow } from 'react-allow'
+import React from "react";
+import { render } from "react-dom";
+import { Allow, AllowContext, setupAllow } from "react-allow";
 
 setupAllow({
-  levels: ['app', 'organization'],
-  default: 'app', // system-wide level
+  levels: ["app", "organization", "repo"], // setup the levels
+  default: "app", // system-wide level
   aliases: {
-    'a': 'app',
-    'o': 'organization'
+    org: "organization"
   }
-})
+});
 
 const context = {
   user: {
+    id: 1, // optional
+    name: "User A", // optional, you can pass any additional props for later use
     roles: {
-      // the default level will always lookup `user.roles[level_name]` for the resolution
-      app: 'user', 
-      organization: { 1: 'admin' } // the role for all organizations the user belongs, as { [id: number | string]: string }
+      app: "user",
+      organization: {
+        1: "member", // { id: role }
+        2: "admin"
+      },
+      repo: {
+        1: "writer",
+        2: "reader",
+        3: "writer"
+      }
     }
   }
-}
+};
 
 function Github({ context }) {
-  const exampleOrganization = { id: 1 } // usually from api, needs an `id`
+  const organizationA = {
+    // usually from api or a route, the `id` is required
+    id: 1,
+    name: "Organization A",
+    repos: [{ id: 1, name: "Repo A" }, { id: 2, name: "Repo B" }]
+  };
+
+  const organizationB = {
+    id: 2,
+    name: "Organization B",
+    repos: [{ id: 3, name: "Repo C" }, { id: 4, name: "Repo D" }]
+  };
+
   return (
     <AllowContext.Provider context={context}>
-      <OrganizationPage organization={exampleOrganization} />
-      {/* This `Allow` will not use the updated context */}
-      <Allow roles={['app:admin', 'organization:admin']}>
-        This will not render
+      <Allow>
+        {" "}
+        {/* is authenticated */}
+        <OrganizationPage organization={organizationA} />
+        <OrganizationPage organization={organizationB} />
       </Allow>
     </AllowContext.Provider>
-  )
+  );
 }
 
 function OrganizationPage({ organization }) {
   return (
-    // Nested `AllowContext.Provider` merging the current organization to the context
+    // Nesting `AllowContext.Provider` merges the current organization to the context
     <AllowContext.Provider context={{ organization }}>
-      {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
-      <Allow roles={['app:admin', 'organization:admin']}>
-        This will render because `user.roles.organization[1] === 'admin'`
+      {/* The `Allow` will use the updated context,
+        * anything outside the provider will use the previous context
+        */}
+      <Allow roles={["organization:*"]}>
+        {/* `*` = any role */}
+        <span className="organization-name">{organization.name}</span>
+        <Allow roles={["organization:admin"]}>
+          <button className="organization-edit">Edit Organization</button>
+        </Allow>
+        <RepoList repos={organization.repos} />
       </Allow>
     </AllowContext.Provider>
-  )
+  );
 }
 
-render(<Github context={context} />, document.getElementById('root'))
+function RepoList({ repos }) {
+  return (
+    <ul>
+      {repos.map(repo => (
+        <AllowContext.Provider context={{ repo }}>
+          {/* context with current repo */}
+          <Allow roles={["org:admin", "repo:*"]}>
+            {/* using org alias */}
+            <li>
+              <span className="repo-name">{repo.name}</span>
+              <Allow roles={["org:admin", "repo:writer"]}>
+                <button className="repo-edit">Edit</button>
+              </Allow>
+              <Allow roles={["org:admin"]}>
+                <button className="repo-delete">Delete</button>
+              </Allow>
+            </li>
+          </Allow>
+        </AllowContext.Provider>
+      ))}
+    </ul>
+  );
+}
+
+render(<Github context={context} />, document.getElementById("root"));
 ```
+
+`AllowContext.Provider` can be nested, merging it's context with the parent, providing the tree with an updated context:
 
 #### Additional options
 
