@@ -17,7 +17,7 @@ npm install allow
 `Allow` provides two main React components: `AllowContext.Provider` and `Allow`.
 
 - `AllowContext.Provider` provides the context for the authorization through the component tree.
-- `Allow` renders its children when the roles match with the context.
+- `Allow` renders its children when the roles match with the context, can be anywhere inside provider tree.
 
 #### Simple example
 [![Edit ql666pw749](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/ql666pw749)
