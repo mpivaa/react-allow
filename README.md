@@ -106,21 +106,9 @@ const context = {
     roles: {
       // the default level will always lookup `user.roles[level_name]` for the resolution
       app: 'user', 
-      organization: { 1: 'admin' } // the role for all organizations the user belongs
+      organization: { 1: 'admin' } // the role for all organizations the user belongs, as { [id: number | string]: string }
     }
   }
-}
-
-function OrganizationPage({ organization }) {
-  return (
-    // Nested `AllowContext.Provider` merging the current organization to the context
-    <AllowContext.Provider context={{ organization }}>
-      {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
-      <Allow roles={['app:admin', 'organization:admin']}>
-        This will render because `user.roles.organization[1] === 'admin'`
-      </Allow>
-    </AllowContext.Provider>
-  )
 }
 
 function Github({ context }) {
@@ -136,6 +124,18 @@ function Github({ context }) {
   )
 }
 
+function OrganizationPage({ organization }) {
+  return (
+    // Nested `AllowContext.Provider` merging the current organization to the context
+    <AllowContext.Provider context={{ organization }}>
+      {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
+      <Allow roles={['app:admin', 'organization:admin']}>
+        This will render because `user.roles.organization[1] === 'admin'`
+      </Allow>
+    </AllowContext.Provider>
+  )
+}
+
 render(<Github context={context} />, document.getElementById('root'))
 ```
 
@@ -146,9 +146,9 @@ You can write the roles as:
  - `'a:admin'`: using it's alias
  - `'app:*'`: the pattern `*` means `any` role in the level
 
-Alternative render when not authorized
+Alternative render when not allowed
  ```jsx
- <Allow ifNotAuthorized={NotAuthorizedPage} />
+ <Allow ifNotAllowed={NotAuthorizedPage} />
  ```
 
  Override provider context
