@@ -4,10 +4,10 @@ Multi level role based authorization
 
 ## Getting Started
 
-This library is available as a NPM package (not yet), so you can install it as you would any other package:
+This library is available as a NPM package, so you can install it as you would any other package:
 
 ```sh
-npm install allow
+npm install --save react-allow
 ```
 
 ## Usage
@@ -104,7 +104,7 @@ setupAllow({
 const context = {
   user: {
     roles: {
-      // the default level will always lookup user.roles[level_name] for the resolution
+      // the default level will always lookup `user.roles[level_name]` for the resolution
       app: 'user', 
       organization: { 1: 'admin' } // the role for all organizations the user belongs
     }
@@ -117,7 +117,7 @@ function OrganizationPage({ organization }) {
     <AllowContext.Provider context={{ organization }}>
       {/* The `Allow` will use the updated context, anything outside the provider will use the previous context */}
       <Allow roles={['app:admin', 'organization:admin']}>
-        This will render because user.roles.organization[1] === 'admin'
+        This will render because `user.roles.organization[1] === 'admin'`
       </Allow>
     </AllowContext.Provider>
   )
