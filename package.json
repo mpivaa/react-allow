@@ -1,6 +1,6 @@
 {
   "name": "react-allow",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A multi-level role based authorization",
   "author": "m.pivaa@gmail.com",
   "keywords": [

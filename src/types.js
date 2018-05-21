@@ -11,7 +11,7 @@ export type User = {
   roles: ResourceRoles
 }
 
-type ResourceRoles = {
+export type ResourceRoles = {
   [Level]: {
     [ID]: Role
   }

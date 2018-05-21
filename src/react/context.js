@@ -47,20 +47,22 @@ class Provider extends React.Component<Props, State> {
   }
 
   isControlled() {
+    // TODO: Remove uncontrolled options
     return true || !isNil(this.props.context)
   }
 
   getProviderValue(parentContext: ?Context) {
     return {
       context: this.getContext(parentContext),
-      updateContext: (context: ?Context): void => {
-        if(!this.isControlled()) {
-          this.setState({ context })
-        }
-        if(isFunction(this.props.onContextChange)) {
-          this.props.onContextChange(context)
-        }
-      }
+      // TODO: updateContext
+      // updateContext: (context: ?Context): void => {
+      //   if(!this.isControlled()) {
+      //     this.setState({ context })
+      //   }
+      //   if(isFunction(this.props.onContextChange)) {
+      //     this.props.onContextChange(context)
+      //   }
+      // }
     }
   }
 
